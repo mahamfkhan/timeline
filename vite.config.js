@@ -3,5 +3,5 @@ import react from '@vitejs/plugin-react'
 
 export default defineConfig({
   plugins: [react()],
-  base: '/timeline/',  // Replace with your repository name
+  base: '/timeline/', // Updated to match your repo name
 })
