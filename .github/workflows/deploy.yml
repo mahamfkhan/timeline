@@ -28,15 +28,10 @@ jobs:
         with:
           node-version: '18'
           registry-url: 'https://registry.npmjs.org'
-          cache: 'npm'
-      
-      - name: Clean install state
-        run: |
-          rm -rf node_modules package-lock.json
-          npm cache clean --force
-      
+          # Remove the cache option since we don't have a lock file
+          
       - name: Install dependencies
-        run: npm install --no-package-lock
+        run: npm install
         
       - name: Build
         run: npm run build
