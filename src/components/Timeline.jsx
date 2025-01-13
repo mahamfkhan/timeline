@@ -161,7 +161,7 @@ const Timeline = () => {
           </button>
         </div>
 
-        <div className="space-y-8">
+        <div className="space-y-4">
           {years.map((year, yearIndex) => (
             <div key={year} className="relative">
               <div className="flex items-center space-x-4 pl-4">
@@ -170,7 +170,7 @@ const Timeline = () => {
                 </div>
               </div>
 
-              <div className="relative h-24 my-4"> {/* Increased height to accommodate wrapping */}
+              <div className="relative h-16 my-2"> {/* Increased height to accommodate wrapping */}
                 <div className={`absolute left-0 right-0 h-0.5 top-6 ${
                   isDark ? 'bg-gray-700' : 'bg-gray-300'
                 }`} />
