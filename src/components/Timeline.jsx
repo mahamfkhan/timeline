@@ -152,7 +152,7 @@ const Timeline = () => {
     <div className={`min-h-screen ${isDark ? 'bg-gray-900 text-white' : 'bg-gray-50 text-gray-900'}`}>
       <div className="max-w-6xl mx-auto p-6">
         <div className="flex justify-between items-center mb-12">
-          <h1 className="text-3xl font-bold">Reflections on the years 1999 to 2024: a collaborative timeline</h1>
+          <h1 className="text-3xl font-bold">Memory Timeline</h1>
           <button
             onClick={toggleTheme}
             className={`p-2 rounded-lg ${isDark ? 'bg-gray-800' : 'bg-gray-200'}`}
@@ -161,7 +161,7 @@ const Timeline = () => {
           </button>
         </div>
 
-        <div className="space-y-16">
+        <div className="space-y-8">
           {years.map((year, yearIndex) => (
             <div key={year} className="relative">
               <div className="flex items-center space-x-4 pl-4">
@@ -177,7 +177,7 @@ const Timeline = () => {
                 
                 <button
                   onClick={() => handleAddClick(year)}
-                  className={`absolute left-4 top-4 w-8 h-8 rounded-full flex items-center justify-center transition-colors ${
+                  className={`absolute left-4 top-[2px] w-8 h-8 rounded-full flex items-center justify-center transition-colors overflow-hidden ${
                     isDark ? 'bg-gray-800 hover:bg-gray-700 text-white' : 'bg-gray-200 hover:bg-gray-300'
                   } hover:scale-110 active:scale-95 z-10`}
                 >
@@ -258,7 +258,7 @@ const Timeline = () => {
 };
 
 const TimelineWrapper = () => {
-  const [isDark, setIsDark] = useState(true);
+  const [isDark, setIsDark] = useState(false);
   const toggleTheme = () => setIsDark(!isDark);
 
   return (
