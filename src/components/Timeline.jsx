@@ -10,33 +10,28 @@ const useTheme = () => {
   return context;
 };
 
-// Generate a consistent color based on username. There can be up to 50 usernames.
+// Generate a consistent color based on username
 const generateColor = (name) => {
   const colors = [
-    '#FF6633', '#FFB399', '#FF33FF', '#FFFF99', '#00B3E6',
-    '#E6B333', '#3366E6', '#999966', '#99FF99', '#B34D4D',
-    '#80B300', '#809900', '#E6B3B3', '#6680B3', '#66991A',
-    '#FF99E6', '#CCFF1A', '#FF1A66', '#E6331A', '#33FFCC',
-    '#66994D', '#B366CC', '#4D8000', '#B33300', '#CC80CC',
-    '#66664D', '#991AFF', '#E666FF', '#4DB3FF', '#1AB399',
-    '#E666B3', '#33991A', '#CC9999', '#B3B31A', '#00E680',
-    '#4D8066', '#809980', '#E6FF80', '#1AFF33', '#999933',
-    '#FF3380', '#CCCC00', '#66E64D', '#4D80CC', '#9900B3',
-    '#E64D66', '#4DB380', '#FF4D4D', '#99E6E6', '#6666FF'
+    'rgb(239, 68, 68)', // red
+    'rgb(34, 197, 94)', // green
+    'rgb(59, 130, 246)', // blue
+    'rgb(168, 85, 247)', // purple
+    'rgb(249, 115, 22)', // orange
+    'rgb(236, 72, 153)', // pink
   ];
   
-  const index = name
-    .split('')
-    .map(char => char.charCodeAt(0))
-    .reduce((acc, val) => acc + val, 0) % colors.length;
-
-  return colors[index];
-
+  let hash = 0;
+  for (let i = 0; i < name.length; i++) {
+    hash = name.charCodeAt(i) + ((hash << 5) - hash);
+  }
+  hash = Math.abs(hash);
+  return colors[hash % colors.length];
 };
 
-const TimelineEntry = ({ entry, isDark, index, totalEntries, onDelete }) => {
+const TimelineEntry = ({ entry, isDark, index, totalEntries, onDelete, userColor }) => {
   const [showTooltip, setShowTooltip] = useState(false);
-  const dotColor = generateColor(entry.submitter);
+  const [isTooltipLocked, setIsTooltipLocked] = useState(false);
   
   // Calculate dot position
   const offset = (index / (totalEntries + 1)) * 100;
@@ -45,13 +40,12 @@ const TimelineEntry = ({ entry, isDark, index, totalEntries, onDelete }) => {
     <div className="absolute" style={{ left: `${offset}%`, top: '-10px' }}>
       <div 
         className="w-4 h-4 rounded-full cursor-pointer transform hover:scale-110 transition-transform"
-        style={{ backgroundColor: dotColor }}
-        onMouseEnter={() => setShowTooltip(true)}
-        onMouseLeave={() => setShowTooltip(false)}
-        onClick={(e) => e.stopPropagation()}
-
+        style={{ backgroundColor: userColor }}
+        onMouseEnter={() => !isTooltipLocked && setShowTooltip(true)}
+        onMouseLeave={() => !isTooltipLocked && setShowTooltip(false)}
+        onClick={() => setIsTooltipLocked(!isTooltipLocked)}
       />
-      {showTooltip && (
+      {(showTooltip || isTooltipLocked) && (
         <div className={`absolute left-1/2 -translate-x-1/2 top-6 w-64 p-3 rounded-lg shadow-lg z-10 ${
           isDark ? 'bg-gray-800 text-white' : 'bg-white text-gray-800'
         }`}>
@@ -78,6 +72,7 @@ const Timeline = () => {
   const [entries, setEntries] = useState([]);
   const [showForm, setShowForm] = useState(false);
   const [selectedYear, setSelectedYear] = useState(null);
+  const [userColors, setUserColors] = useState({});
   const [newEntry, setNewEntry] = useState({
     content: '',
     submitter: ''
@@ -87,7 +82,17 @@ const Timeline = () => {
   useEffect(() => {
     const savedEntries = localStorage.getItem('timelineEntries');
     if (savedEntries) {
-      setEntries(JSON.parse(savedEntries));
+      const parsedEntries = JSON.parse(savedEntries);
+      setEntries(parsedEntries);
+      
+      // Generate colors for all unique users
+      const colors = {};
+      parsedEntries.forEach(entry => {
+        if (!colors[entry.submitter]) {
+          colors[entry.submitter] = generateColor(entry.submitter);
+        }
+      });
+      setUserColors(colors);
     }
   }, []);
 
@@ -110,6 +115,13 @@ const Timeline = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (newEntry.content && newEntry.submitter) {
+      // Assign color if this is a new user
+      if (!userColors[newEntry.submitter]) {
+        setUserColors(prev => ({
+          ...prev,
+          [newEntry.submitter]: generateColor(newEntry.submitter)
+        }));
+      }
       setEntries([...entries, { ...newEntry, year: selectedYear }]);
       handleCloseForm();
     }
@@ -130,7 +142,7 @@ const Timeline = () => {
     <div className={`min-h-screen ${isDark ? 'bg-gray-900 text-white' : 'bg-gray-50 text-gray-900'}`}>
       <div className="max-w-6xl mx-auto p-6">
         <div className="flex justify-between items-center mb-12">
-          <h1 className="text-3xl font-bold">Reflections on the years 1999 to 2024: a collaborative timeline</h1>
+          <h1 className="text-3xl font-bold">Memory Timeline</h1>
           <button
             onClick={toggleTheme}
             className={`p-2 rounded-lg ${isDark ? 'bg-gray-800' : 'bg-gray-200'}`}
@@ -175,6 +187,7 @@ const Timeline = () => {
                         index={index}
                         totalEntries={arr.length}
                         onDelete={handleDelete}
+                        userColor={userColors[entry.submitter]}
                       />
                     ))}
                 </div>
