@@ -10,7 +10,7 @@ const useTheme = () => {
   return context;
 };
 
-// Generate a color based on username
+// Generate a consistent color based on username
 const generateColor = (name) => {
   const colors = [
     'rgb(239, 68, 68)', // red
@@ -21,24 +21,31 @@ const generateColor = (name) => {
     'rgb(236, 72, 153)', // pink
   ];
   
-  const hash = name.split('').reduce((acc, char) => char.charCodeAt(0) + acc, 0);
+  let hash = 0;
+  for (let i = 0; i < name.length; i++) {
+    hash = name.charCodeAt(i) + ((hash << 5) - hash);
+  }
+  hash = Math.abs(hash);
   return colors[hash % colors.length];
 };
 
-const TimelineEntry = ({ entry, isDark }) => {
+const TimelineEntry = ({ entry, isDark, index, totalEntries }) => {
   const [showTooltip, setShowTooltip] = useState(false);
   const dotColor = generateColor(entry.submitter);
   
+  // Calculate dot position
+  const offset = (index / (totalEntries + 1)) * 100;
+  
   return (
-    <div className="relative">
+    <div className="absolute" style={{ left: `${offset}%`, top: '-10px' }}>
       <div 
-        className="w-4 h-4 rounded-full absolute -left-2 cursor-pointer transform hover:scale-110 transition-transform"
+        className="w-4 h-4 rounded-full cursor-pointer transform hover:scale-110 transition-transform"
         style={{ backgroundColor: dotColor }}
         onMouseEnter={() => setShowTooltip(true)}
         onMouseLeave={() => setShowTooltip(false)}
       />
       {showTooltip && (
-        <div className={`absolute left-4 -top-2 w-64 p-3 rounded-lg shadow-lg z-10 ${
+        <div className={`absolute left-1/2 -translate-x-1/2 top-6 w-64 p-3 rounded-lg shadow-lg z-10 ${
           isDark ? 'bg-gray-800 text-white' : 'bg-white text-gray-800'
         }`}>
           <p className="font-medium">{entry.content}</p>
@@ -59,7 +66,6 @@ const Timeline = () => {
   });
   const { isDark, toggleTheme } = useTheme();
 
-  // Load entries from localStorage
   useEffect(() => {
     const savedEntries = localStorage.getItem('timelineEntries');
     if (savedEntries) {
@@ -67,7 +73,6 @@ const Timeline = () => {
     }
   }, []);
 
-  // Save entries to localStorage
   useEffect(() => {
     localStorage.setItem('timelineEntries', JSON.stringify(entries));
   }, [entries]);
@@ -96,8 +101,8 @@ const Timeline = () => {
 
   return (
     <div className={`min-h-screen ${isDark ? 'bg-gray-900 text-white' : 'bg-gray-50 text-gray-900'}`}>
-      <div className="max-w-4xl mx-auto p-6">
-        <div className="flex justify-between items-center mb-8">
+      <div className="max-w-6xl mx-auto p-6">
+        <div className="flex justify-between items-center mb-12">
           <h1 className="text-3xl font-bold">Memory Timeline</h1>
           <button
             onClick={toggleTheme}
@@ -107,41 +112,58 @@ const Timeline = () => {
           </button>
         </div>
 
-        <div className="relative">
-          {/* Timeline line */}
-          <div className={`absolute left-0 w-0.5 h-full ${isDark ? 'bg-gray-700' : 'bg-gray-300'}`} />
+        <div className="space-y-16">
+          {years.map((year, yearIndex) => (
+            <div key={year} className="relative">
+              {/* Year section */}
+              <div className="flex items-center justify-center space-x-4">
+                <div className={`text-xl font-semibold ${isDark ? 'text-white' : 'text-gray-900'}`}>
+                  {year}
+                </div>
+              </div>
 
-          {/* Years and entries */}
-          <div className="space-y-8">
-            {years.map(year => (
-              <div key={year} className="relative pl-8">
-                <div className="flex items-center justify-between mb-2">
-                  <h2 className="text-xl font-semibold">{year}</h2>
+              {/* Timeline segment with dots */}
+              <div className="relative h-12 my-4">
+                {/* Line */}
+                <div className={`absolute left-0 right-0 h-0.5 top-1/2 -translate-y-1/2 ${
+                  isDark ? 'bg-gray-700' : 'bg-gray-300'
+                }`} />
+                
+                {/* Add button */}
+                {yearIndex < years.length - 1 && (
                   <button
                     onClick={() => handleAddClick(year)}
-                    className={`w-8 h-8 rounded-lg flex items-center justify-center transition-colors ${
+                    className={`absolute left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full flex items-center justify-center transition-colors ${
                       isDark ? 'bg-gray-800 hover:bg-gray-700' : 'bg-gray-200 hover:bg-gray-300'
                     }`}
                   >
                     +
                   </button>
-                </div>
-                <div className="space-y-4">
+                )}
+
+                {/* Dots for this year */}
+                <div className="relative h-full">
                   {entries
                     .filter(entry => entry.year === year)
-                    .map((entry, index) => (
-                      <TimelineEntry key={index} entry={entry} isDark={isDark} />
+                    .map((entry, index, arr) => (
+                      <TimelineEntry 
+                        key={index} 
+                        entry={entry} 
+                        isDark={isDark}
+                        index={index}
+                        totalEntries={arr.length}
+                      />
                     ))}
                 </div>
               </div>
-            ))}
-          </div>
+            </div>
+          ))}
         </div>
       </div>
 
       {/* Add entry modal */}
       {showForm && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className={`p-6 rounded-lg max-w-md w-full ${
             isDark ? 'bg-gray-800' : 'bg-white'
           }`}>
