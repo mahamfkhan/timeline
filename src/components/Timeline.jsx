@@ -184,8 +184,7 @@ const Timeline = () => {
                   +
                 </button>
 
-                <div className="relative ml-4 h-full pt-4">{/* Added left margin to align with year text */}
-                  {entries
+                <div className="relative ml-4 h-full mt-8 pt-4"> {/* Adds 32px margin on top of existing padding */}                  {entries
                     .filter(entry => entry.year === year)
                     .map((entry, index, arr) => (
                       <TimelineEntry 
