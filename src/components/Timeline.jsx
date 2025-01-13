@@ -212,7 +212,7 @@ const Timeline = () => {
           }`}>
             <div className="flex justify-between items-center mb-4">
               <h3 className="text-lg font-semibold">Add a memory for {selectedYear}</h3>
-              <p className="text-sm mt-1 text-gray-500">Click the plus button again to close this window</p>
+              {/* <p className="text-sm mt-1 text-gray-500">Click the plus button again to close this window</p> */}
               <button
                 onClick={handleCloseForm}
                 className="opacity-70 hover:opacity-100"
