@@ -250,7 +250,8 @@ const Timeline = () => {
 };
 
 const TimelineWrapper = () => {
-  const [isDark, setIsDark] = useState(false);
+  // Default to dark mode
+  const [isDark, setIsDark] = useState(true);
   const toggleTheme = () => setIsDark(!isDark);
 
   return (
