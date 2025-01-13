@@ -48,6 +48,9 @@ const TimelineEntry = ({ entry, isDark, index, totalEntries, onDelete }) => {
         style={{ backgroundColor: dotColor }}
         onMouseEnter={() => setShowTooltip(true)}
         onMouseLeave={() => setShowTooltip(false)}
+        // If you click on the tooltip dot, it will not close
+        onClick={(e) => e.stopPropagation()}
+        
       />
       {showTooltip && (
         <div className={`absolute left-1/2 -translate-x-1/2 top-6 w-64 p-3 rounded-lg shadow-lg z-10 ${
