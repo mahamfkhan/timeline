@@ -10,23 +10,26 @@ const useTheme = () => {
   return context;
 };
 
-// Generate a consistent color based on username
+// Generate a consistent color based on username from a color palette
 const generateColor = (name) => {
   const colors = [
-    'rgb(239, 68, 68)', // red
-    'rgb(34, 197, 94)', // green
-    'rgb(59, 130, 246)', // blue
-    'rgb(168, 85, 247)', // purple
-    'rgb(249, 115, 22)', // orange
-    'rgb(236, 72, 153)', // pink
+    '#FF6633', '#FFB399', '#FF33FF', '#FFFF99', '#00B3E6',
+    '#E6B333', '#3366E6', '#999966', '#99FF99', '#B34D4D',
+    '#80B300', '#809900', '#E6B3B3', '#6680B3', '#66991A',
+    '#FF99E6', '#CCFF1A', '#FF1A66', '#E6331A', '#33FFCC',
+    '#66994D', '#B366CC', '#4D8000', '#B33300', '#CC80CC',
+    '#66664D', '#991AFF', '#E666FF', '#4DB3FF', '#1AB399',
+    '#E666B3', '#33991A', '#CC9999', '#B3B31A', '#00E680',
+    '#4D8066', '#809980', '#E6FF80', '#1AFF33', '#999933',
+    '#FF3380', '#CCCC00', '#66E64D', '#4D80CC', '#9900B3',
+    '#E64D66', '#4DB380', '#FF4D4D', '#99E6E6', '#6666FF'
   ];
   
-  let hash = 0;
-  for (let i = 0; i < name.length; i++) {
-    hash = name.charCodeAt(i) + ((hash << 5) - hash);
-  }
-  hash = Math.abs(hash);
-  return colors[hash % colors.length];
+  const charCodes = name.split('').map(char => char.charCodeAt(0));
+  const sum = charCodes.reduce((acc, code) => acc + code, 0);
+  const index = sum % colors.length;
+  return colors[index];
+  
 };
 
 const TimelineEntry = ({ entry, isDark, index, totalEntries, onDelete, userColor }) => {
