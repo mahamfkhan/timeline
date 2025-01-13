@@ -1,4 +1,4 @@
-import BookTimeline from './components/BookTimeline'
+import BookTimeline from './components/Timeline'
 
 function App() {
   return (
