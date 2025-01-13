@@ -142,7 +142,7 @@ const Timeline = () => {
     <div className={`min-h-screen ${isDark ? 'bg-gray-900 text-white' : 'bg-gray-50 text-gray-900'}`}>
       <div className="max-w-6xl mx-auto p-6">
         <div className="flex justify-between items-center mb-12">
-          <h1 className="text-3xl font-bold">Memory Timeline</h1>
+          <h1 className="text-3xl font-bold">Reflections on the years 1999 to 2024: a collaborative timeline</h1>
           <button
             onClick={toggleTheme}
             className={`p-2 rounded-lg ${isDark ? 'bg-gray-800' : 'bg-gray-200'}`}
