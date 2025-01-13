@@ -142,7 +142,7 @@ const Timeline = () => {
     <div className={`min-h-screen ${isDark ? 'bg-gray-900 text-white' : 'bg-gray-50 text-gray-900'}`}>
       <div className="max-w-6xl mx-auto p-6">
         <div className="flex justify-between items-center mb-12">
-          <h1 className="text-3xl font-bold">Reflections on the years 1999 to 2024: a collaborative timeline</h1>
+          <h1 className="text-3xl font-bold">Memory Timeline</h1>
           <button
             onClick={toggleTheme}
             className={`p-2 rounded-lg ${isDark ? 'bg-gray-800' : 'bg-gray-200'}`}
@@ -154,7 +154,7 @@ const Timeline = () => {
         <div className="space-y-16">
           {years.map((year, yearIndex) => (
             <div key={year} className="relative">
-              <div className="flex items-center justify-center space-x-4">
+              <div className="flex items-center space-x-4 pl-4">
                 <div className={`text-xl font-semibold ${isDark ? 'text-white' : 'text-gray-900'}`}>
                   {year}
                 </div>
@@ -168,9 +168,9 @@ const Timeline = () => {
                 {yearIndex < years.length - 1 && (
                   <button
                     onClick={() => handleAddClick(year)}
-                    className={`absolute left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full flex items-center justify-center transition-colors ${
-                      isDark ? 'bg-gray-800 hover:bg-gray-700' : 'bg-gray-200 hover:bg-gray-300'
-                    }`}
+                    className={`absolute left-4 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full flex items-center justify-center transition-colors ${
+                      isDark ? 'bg-gray-800 hover:bg-gray-700 text-white' : 'bg-gray-200 hover:bg-gray-300'
+                    } hover:scale-110 active:scale-95`}
                   >
                     +
                   </button>
@@ -204,6 +204,7 @@ const Timeline = () => {
           }`}>
             <div className="flex justify-between items-center mb-4">
               <h3 className="text-lg font-semibold">Add a memory for {selectedYear}</h3>
+              <p className="text-sm mt-1 text-gray-500">Click the plus button again to close this window</p>
               <button
                 onClick={handleCloseForm}
                 className="opacity-70 hover:opacity-100"
