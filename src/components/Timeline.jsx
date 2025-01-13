@@ -29,7 +29,7 @@ const generateColor = (name) => {
   const sum = charCodes.reduce((acc, code) => acc + code, 0);
   const index = sum % colors.length;
   return colors[index];
-  
+
 };
 
 const TimelineEntry = ({ entry, isDark, index, totalEntries, onDelete, userColor }) => {
@@ -168,10 +168,7 @@ const Timeline = () => {
           {years.map((year, yearIndex) => (
             <div key={year} className="relative">
               <div className="flex items-center space-x-4 pl-4">
-                <div className={`text-xl font-semibold ${isDark ? 'text-white' : 'text-gray-900'}`}>
-                  {year}
-                </div>
-                <button
+              <button
                   onClick={() => handleAddClick(year)}
                   className={`w-8 h-8 rounded-full flex items-center justify-center transition-colors overflow-hidden ${
                     isDark ? 'bg-gray-800 hover:bg-gray-700 text-white' : 'bg-gray-200 hover:bg-gray-300'
@@ -179,6 +176,10 @@ const Timeline = () => {
                 >
                   +
                 </button>
+                <div className={`text-xl font-semibold ${isDark ? 'text-white' : 'text-gray-900'}`}>
+                  {year}
+                </div>
+                
               </div>
 
               <div className="relative ml-4 h-full mt-8 pt-4">
