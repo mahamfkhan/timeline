@@ -170,14 +170,14 @@ const Timeline = () => {
                 </div>
               </div>
 
-              <div className="relative h-24 my-4"> {/* Increased height to accommodate wrapping */}
-                <div className={`absolute left-0 right-0 h-0.5 top-6 ${
+              <div className="relative h-24 my-4">
+                <div className={`absolute left-0 right-0 h-0.5 top-11 ${
                   isDark ? 'bg-gray-700' : 'bg-gray-300'
                 }`} />
                 
                 <button
                   onClick={() => handleAddClick(year)}
-                  className={`absolute left-4 top-[2px] w-8 h-8 rounded-full flex items-center justify-center transition-colors overflow-hidden ${
+                  className={`absolute left-4 top-5 w-8 h-8 rounded-full flex items-center justify-center transition-colors overflow-hidden ${
                     isDark ? 'bg-gray-800 hover:bg-gray-700 text-white' : 'bg-gray-200 hover:bg-gray-300'
                   } hover:scale-110 active:scale-95 z-10`}
                 >
