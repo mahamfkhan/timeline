@@ -34,10 +34,14 @@ const TimelineEntry = ({ entry, isDark, index, totalEntries, onDelete, userColor
   const [isTooltipLocked, setIsTooltipLocked] = useState(false);
   
   // Calculate dot position
-  const offset = (index / (totalEntries + 1)) * 100;
+  const dotSpacing = 24; // 24px between dots
+  const xPosition = index * dotSpacing;
   
   return (
-    <div className="absolute" style={{ left: `${offset}%`, top: '-10px' }}>
+    <div className="absolute" style={{ 
+      left: `${xPosition}px`,
+      top: xPosition > 500 ? '20px' : '-10px' // Move to next line if too far right
+    }}>
       <div 
         className="w-4 h-4 rounded-full cursor-pointer transform hover:scale-110 transition-transform"
         style={{ backgroundColor: userColor }}
@@ -101,9 +105,15 @@ const Timeline = () => {
   }, [entries]);
 
   const handleAddClick = (year) => {
-    setSelectedYear(year);
-    setShowForm(true);
-    setNewEntry({ content: '', submitter: '' });
+    if (showForm && selectedYear === year) {
+      // If form is already open for this year, close it
+      handleCloseForm();
+    } else {
+      // Open form for this year
+      setSelectedYear(year);
+      setShowForm(true);
+      setNewEntry({ content: '', submitter: '' });
+    }
   };
 
   const handleCloseForm = () => {
@@ -160,23 +170,21 @@ const Timeline = () => {
                 </div>
               </div>
 
-              <div className="relative h-12 my-4">
-                <div className={`absolute left-0 right-0 h-0.5 top-1/2 -translate-y-1/2 ${
+              <div className="relative h-24 my-4"> {/* Increased height to accommodate wrapping */}
+                <div className={`absolute left-0 right-0 h-0.5 top-6 ${
                   isDark ? 'bg-gray-700' : 'bg-gray-300'
                 }`} />
                 
-                {yearIndex < years.length - 1 && (
-                  <button
-                    onClick={() => handleAddClick(year)}
-                    className={`absolute left-4 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full flex items-center justify-center transition-colors ${
-                      isDark ? 'bg-gray-800 hover:bg-gray-700 text-white' : 'bg-gray-200 hover:bg-gray-300'
-                    } hover:scale-110 active:scale-95`}
-                  >
-                    +
-                  </button>
-                )}
+                <button
+                  onClick={() => handleAddClick(year)}
+                  className={`absolute left-4 top-4 w-8 h-8 rounded-full flex items-center justify-center transition-colors ${
+                    isDark ? 'bg-gray-800 hover:bg-gray-700 text-white' : 'bg-gray-200 hover:bg-gray-300'
+                  } hover:scale-110 active:scale-95 z-10`}
+                >
+                  +
+                </button>
 
-                <div className="relative h-full">
+                <div className="relative ml-4 h-full pt-4">{/* Added left margin to align with year text */}>
                   {entries
                     .filter(entry => entry.year === year)
                     .map((entry, index, arr) => (
@@ -250,8 +258,7 @@ const Timeline = () => {
 };
 
 const TimelineWrapper = () => {
-  // Default to dark mode
-  const [isDark, setIsDark] = useState(true);
+  const [isDark, setIsDark] = useState(false);
   const toggleTheme = () => setIsDark(!isDark);
 
   return (
