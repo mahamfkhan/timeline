@@ -168,36 +168,30 @@ const Timeline = () => {
                 <div className={`text-xl font-semibold ${isDark ? 'text-white' : 'text-gray-900'}`}>
                   {year}
                 </div>
-              </div>
-
-              <div className="relative h-24 my-4">
-                <div className={`absolute left-0 right-0 h-0.5 top-11 ${
-                  isDark ? 'bg-gray-700' : 'bg-gray-300'
-                }`} />
-                
                 <button
                   onClick={() => handleAddClick(year)}
-                  className={`absolute left-4 top-5 w-8 h-8 rounded-full flex items-center justify-center transition-colors overflow-hidden ${
+                  className={`w-8 h-8 rounded-full flex items-center justify-center transition-colors overflow-hidden ${
                     isDark ? 'bg-gray-800 hover:bg-gray-700 text-white' : 'bg-gray-200 hover:bg-gray-300'
-                  } hover:scale-110 active:scale-95 z-10`}
+                  } hover:scale-110 active:scale-95`}
                 >
                   +
                 </button>
+              </div>
 
-                <div className="relative ml-4 h-full mt-8 pt-4"> {/* Adds 32px margin on top of existing padding */}                  {entries
-                    .filter(entry => entry.year === year)
-                    .map((entry, index, arr) => (
-                      <TimelineEntry 
-                        key={index} 
-                        entry={entry} 
-                        isDark={isDark}
-                        index={index}
-                        totalEntries={arr.length}
-                        onDelete={handleDelete}
-                        userColor={userColors[entry.submitter]}
-                      />
-                    ))}
-                </div>
+              <div className="relative ml-4 h-full mt-8 pt-4">
+                {entries
+                  .filter(entry => entry.year === year)
+                  .map((entry, index, arr) => (
+                    <TimelineEntry 
+                      key={index} 
+                      entry={entry} 
+                      isDark={isDark}
+                      index={index}
+                      totalEntries={arr.length}
+                      onDelete={handleDelete}
+                      userColor={userColors[entry.submitter]}
+                    />
+                  ))}
               </div>
             </div>
           ))}
