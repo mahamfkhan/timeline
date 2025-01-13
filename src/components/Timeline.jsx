@@ -161,7 +161,7 @@ const Timeline = () => {
           </button>
         </div>
 
-        <div className="space-y-4">
+        <div className="space-y-8">
           {years.map((year, yearIndex) => (
             <div key={year} className="relative">
               <div className="flex items-center space-x-4 pl-4">
@@ -170,7 +170,7 @@ const Timeline = () => {
                 </div>
               </div>
 
-              <div className="relative h-16 my-2"> {/* Increased height to accommodate wrapping */}
+              <div className="relative h-24 my-4"> {/* Increased height to accommodate wrapping */}
                 <div className={`absolute left-0 right-0 h-0.5 top-6 ${
                   isDark ? 'bg-gray-700' : 'bg-gray-300'
                 }`} />
@@ -184,7 +184,7 @@ const Timeline = () => {
                   +
                 </button>
 
-                <div className="relative ml-4 h-full pt-4">{/* Added left margin to align with year text */}>
+                <div className="relative ml-4 h-full pt-4">{/* Added left margin to align with year text */}
                   {entries
                     .filter(entry => entry.year === year)
                     .map((entry, index, arr) => (
@@ -212,7 +212,6 @@ const Timeline = () => {
           }`}>
             <div className="flex justify-between items-center mb-4">
               <h3 className="text-lg font-semibold">Add a memory for {selectedYear}</h3>
-              {/* <p className="text-sm mt-1 text-gray-500">Click the plus button again to close this window</p> */}
               <button
                 onClick={handleCloseForm}
                 className="opacity-70 hover:opacity-100"
@@ -258,7 +257,7 @@ const Timeline = () => {
 };
 
 const TimelineWrapper = () => {
-  const [isDark, setIsDark] = useState(false);
+  const [isDark, setIsDark] = useState(true);
   const toggleTheme = () => setIsDark(!isDark);
 
   return (
