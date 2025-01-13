@@ -1,5 +1,5 @@
 import React, { useState, useEffect, createContext, useContext } from 'react';
-import { Moon, Sun } from 'lucide-react';
+import { Moon, Sun, Trash2 } from 'lucide-react';
 
 // Theme context
 const ThemeContext = createContext();
@@ -29,7 +29,7 @@ const generateColor = (name) => {
   return colors[hash % colors.length];
 };
 
-const TimelineEntry = ({ entry, isDark, index, totalEntries }) => {
+const TimelineEntry = ({ entry, isDark, index, totalEntries, onDelete }) => {
   const [showTooltip, setShowTooltip] = useState(false);
   const dotColor = generateColor(entry.submitter);
   
@@ -48,8 +48,19 @@ const TimelineEntry = ({ entry, isDark, index, totalEntries }) => {
         <div className={`absolute left-1/2 -translate-x-1/2 top-6 w-64 p-3 rounded-lg shadow-lg z-10 ${
           isDark ? 'bg-gray-800 text-white' : 'bg-white text-gray-800'
         }`}>
-          <p className="font-medium">{entry.content}</p>
-          <p className="text-sm mt-1 opacity-75">Added by: {entry.submitter}</p>
+          <div className="flex justify-between items-start">
+            <div className="flex-grow">
+              <p className="font-medium">{entry.content}</p>
+              <p className="text-sm mt-1 opacity-75">Added by: {entry.submitter}</p>
+            </div>
+            <button
+              onClick={() => onDelete(entry)}
+              className="p-1 rounded hover:bg-red-100 hover:text-red-600 transition-colors"
+              aria-label="Delete entry"
+            >
+              <Trash2 className="w-4 h-4" />
+            </button>
+          </div>
         </div>
       )}
     </div>
@@ -97,6 +108,15 @@ const Timeline = () => {
     }
   };
 
+  const handleDelete = (entryToDelete) => {
+    const newEntries = entries.filter(entry => 
+      !(entry.content === entryToDelete.content && 
+        entry.submitter === entryToDelete.submitter && 
+        entry.year === entryToDelete.year)
+    );
+    setEntries(newEntries);
+  };
+
   const years = Array.from({ length: 26 }, (_, i) => 1999 + i);
 
   return (
@@ -115,21 +135,17 @@ const Timeline = () => {
         <div className="space-y-16">
           {years.map((year, yearIndex) => (
             <div key={year} className="relative">
-              {/* Year section */}
               <div className="flex items-center justify-center space-x-4">
                 <div className={`text-xl font-semibold ${isDark ? 'text-white' : 'text-gray-900'}`}>
                   {year}
                 </div>
               </div>
 
-              {/* Timeline segment with dots */}
               <div className="relative h-12 my-4">
-                {/* Line */}
                 <div className={`absolute left-0 right-0 h-0.5 top-1/2 -translate-y-1/2 ${
                   isDark ? 'bg-gray-700' : 'bg-gray-300'
                 }`} />
                 
-                {/* Add button */}
                 {yearIndex < years.length - 1 && (
                   <button
                     onClick={() => handleAddClick(year)}
@@ -141,7 +157,6 @@ const Timeline = () => {
                   </button>
                 )}
 
-                {/* Dots for this year */}
                 <div className="relative h-full">
                   {entries
                     .filter(entry => entry.year === year)
@@ -152,6 +167,7 @@ const Timeline = () => {
                         isDark={isDark}
                         index={index}
                         totalEntries={arr.length}
+                        onDelete={handleDelete}
                       />
                     ))}
                 </div>
@@ -161,7 +177,6 @@ const Timeline = () => {
         </div>
       </div>
 
-      {/* Add entry modal */}
       {showForm && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className={`p-6 rounded-lg max-w-md w-full ${
@@ -213,7 +228,6 @@ const Timeline = () => {
   );
 };
 
-// Wrap the Timeline component with ThemeProvider
 const TimelineWrapper = () => {
   const [isDark, setIsDark] = useState(false);
   const toggleTheme = () => setIsDark(!isDark);
